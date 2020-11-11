@@ -22,7 +22,7 @@ class Api:
         self,
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
-        keep_cookies: bool = True,
+        keep_cookies: bool = False,
         max_request_try_count: int = 1,
         sleep_s_between_failed_requests: Optional[float] = 0.5,
         default_headers: Optional[Dict[str, any]] = None,
