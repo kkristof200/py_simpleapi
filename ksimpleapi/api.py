@@ -3,6 +3,7 @@
 # System
 from abc import ABC, abstractmethod
 from typing import Optional, List, Union, Dict
+from requests import Response
 
 # Local
 from .request import Request
@@ -36,7 +37,7 @@ class Api:
             sleep_s_between_failed_requests (Optional[float], optional): How much to wait between requests when retrying. Defaults to 0.5.
             debug (bool, optional): Show debug logs. Defaults to False.
         """
-        self.request = Request(
+        self._request = Request(
             user_agent=user_agent,
             proxy=proxy,
             keep_cookies=keep_cookies,
@@ -75,6 +76,12 @@ class Api:
         """
 
         return None
+
+    def _get(self, url: str, extra_headers: Optional[Dict[str, any]] = None) -> Optional[Response]:
+        return self._request.get(url, extra_headers)
+
+    def _post(self, url: str, body: dict, extra_headers: Optional[Dict[str, any]] = None) -> Optional[Response]:
+        return self._request.post(url, body, extra_headers)
 
 
 # ---------------------------------------------------------------------------------------------------------------------------------------- #

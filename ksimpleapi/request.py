@@ -45,23 +45,29 @@ class Request:
         self.default_headers = {}
 
         if default_headers:
-            for k, v in default_headers:
+            for k, v in default_headers.items():
+                if not v:
+                    continue
+
                 if type(v) != str:
                     v = str(v)
 
                 self.default_headers[k] = v
 
         if extra_headers:
-            for k, v in extra_headers:
+            for k, v in extra_headers.items():
+                if not v:
+                    continue
+
                 if type(v) != str:
                     v = str(v)
 
                 self.default_headers[k] = v
 
-    def get(self, url: str, extra_headers: Optional[Dict[str, any]] = None):
+    def get(self, url: str, extra_headers: Optional[Dict[str, any]] = None) -> Optional[Response]:
         return self.__request(url, RequestMethod.GET, extra_headers)
     
-    def post(self, url: str, body: dict, extra_headers: Optional[Dict[str, any]] = None):
+    def post(self, url: str, body: dict, extra_headers: Optional[Dict[str, any]] = None) -> Optional[Response]:
         return self.__request(url, RequestMethod.POST, extra_headers, body)
 
     # ------------------------------------------------------- Private methods -------------------------------------------------------- #
@@ -82,7 +88,10 @@ class Request:
                 headers['Host'] = host
 
         if extra_headers:
-            for k, v in extra_headers:
+            for k, v in extra_headers.items():
+                if not v:
+                    continue
+
                 if type(v) != str:
                     v = str(v)
 
