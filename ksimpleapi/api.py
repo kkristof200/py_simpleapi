@@ -25,6 +25,8 @@ class Api:
         keep_cookies: bool = True,
         max_request_try_count: int = 1,
         sleep_s_between_failed_requests: Optional[float] = 0.5,
+        default_headers: Optional[Dict[str, any]] = None,
+        extra_headers: Optional[Dict[str, any]] = None,
         debug: bool = False
     ):
         """init function
@@ -43,15 +45,15 @@ class Api:
             keep_cookies=keep_cookies,
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
-            default_headers=self.default_headers,
-            extra_headers=self.extra_headers,
+            default_headers=default_headers or self.default_headers(),
+            extra_headers=extra_headers or self.extra_headers(),
             debug=debug
         )
 
 
     # ------------------------------------------------------ Public properties ------------------------------------------------------- #
 
-    @property
+    @classmethod
     def default_headers(self) -> Optional[Dict[str, any]]:
         """ Default headers to use for every request.
             Overwrite this value as needed.
@@ -69,7 +71,7 @@ class Api:
             'TE': 'Trailers'
         }
 
-    @property
+    @classmethod
     def extra_headers(self) -> Optional[Dict[str, any]]:
         """ Every entry from this adds/overwrites an entry from 'default_headers'
             Overwrite this value as needed.
@@ -77,11 +79,100 @@ class Api:
 
         return None
 
-    def _get(self, url: str, extra_headers: Optional[Dict[str, any]] = None) -> Optional[Response]:
-        return self._request.get(url, extra_headers)
 
-    def _post(self, url: str, body: dict, extra_headers: Optional[Dict[str, any]] = None) -> Optional[Response]:
-        return self._request.post(url, body, extra_headers)
+    # ------------------------------------------------------- Private methods -------------------------------------------------------- #
+
+    def _get(
+        self,
+        url: str,
+        user_agent: Optional[Union[str, List[str]]] = None,
+        proxy: Optional[Union[str, List[str]]] = None,
+        use_cookies: bool = True,
+        max_request_try_count: int = 1,
+        sleep_s_between_failed_requests: Optional[float] = 0.5,
+        extra_headers: Optional[Dict[str, any]] = None,
+        debug: bool = False
+    ) -> Optional[Response]:
+        return self._request.get(
+            url,
+            user_agent=user_agent,
+            proxy=proxy,
+            use_cookies=use_cookies,
+            max_request_try_count=max_request_try_count,
+            sleep_s_between_failed_requests=sleep_s_between_failed_requests,
+            extra_headers=extra_headers,
+            debug=debug
+        )
+
+    @classmethod
+    def _get_cls(
+        cls,
+        url: str,
+        user_agent: Optional[Union[str, List[str]]] = None,
+        proxy: Optional[Union[str, List[str]]] = None,
+        max_request_try_count: int = 1,
+        sleep_s_between_failed_requests: Optional[float] = 0.5,
+        extra_headers: Optional[Dict[str, any]] = None,
+        debug: bool = False
+    ):
+        return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._get(
+            url,
+            user_agent=user_agent,
+            proxy=proxy,
+            use_cookies=False,
+            max_request_try_count=max_request_try_count,
+            sleep_s_between_failed_requests=sleep_s_between_failed_requests,
+            extra_headers=extra_headers,
+            debug=debug
+        )
+
+    def _post(
+        self,
+        url: str,
+        body: dict,
+        user_agent: Optional[Union[str, List[str]]] = None,
+        proxy: Optional[Union[str, List[str]]] = None,
+        use_cookies: bool = True,
+        max_request_try_count: int = 1,
+        sleep_s_between_failed_requests: Optional[float] = 0.5,
+        extra_headers: Optional[Dict[str, any]] = None,
+        debug: bool = False
+    ) -> Optional[Response]:
+        return self._request.post(
+            url,
+            user_agent=user_agent,
+            proxy=proxy,
+            use_cookies=use_cookies,
+            max_request_try_count=max_request_try_count,
+            sleep_s_between_failed_requests=sleep_s_between_failed_requests,
+            extra_headers=extra_headers,
+            body=body,
+            debug=debug
+        )
+
+    @classmethod
+    def _post_cls(
+        cls,
+        url: str,
+        body: dict,
+        user_agent: Optional[Union[str, List[str]]] = None,
+        proxy: Optional[Union[str, List[str]]] = None,
+        max_request_try_count: int = 1,
+        sleep_s_between_failed_requests: Optional[float] = 0.5,
+        extra_headers: Optional[Dict[str, any]] = None,
+        debug: bool = False
+    ):
+        return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._post(
+            url,
+            body,
+            user_agent=user_agent,
+            proxy=proxy,
+            use_cookies=False,
+            max_request_try_count=max_request_try_count,
+            sleep_s_between_failed_requests=sleep_s_between_failed_requests,
+            extra_headers=extra_headers,
+            debug=debug
+        )
 
 
 # ---------------------------------------------------------------------------------------------------------------------------------------- #

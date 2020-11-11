@@ -22,14 +22,13 @@ class Request:
         self,
         default_headers: Optional[Dict[str, any]] = None,
         extra_headers: Optional[Dict[str, any]] = None,
-        user_agent: Optional[str] = None,
+        user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         max_request_try_count: int = 1,
         sleep_s_between_failed_requests: Optional[float] = 0.5,
         keep_cookies: bool = True,
         debug: bool = False
     ):
-        self.user_agent = user_agent
         self.cookies = None
 
         self.max_request_try_count = max_request_try_count
@@ -38,10 +37,16 @@ class Request:
         self.keep_cookies = keep_cookies
         self.debug = debug
 
+        if type(user_agent) == list:
+            user_agent = random.choice(user_agent) if len(user_agent) > 0 else None
+
+        self.user_agent = user_agent
+
         if type(proxy) == list:
             proxy = random.choice(proxy) if len(proxy) > 0 else None
 
         self.proxy = proxy
+
         self.default_headers = {}
 
         if default_headers:
@@ -64,11 +69,53 @@ class Request:
 
                 self.default_headers[k] = v
 
-    def get(self, url: str, extra_headers: Optional[Dict[str, any]] = None) -> Optional[Response]:
-        return self.__request(url, RequestMethod.GET, extra_headers)
+    def get(
+        self,
+        url: str,
+        user_agent: Optional[Union[str, List[str]]] = None,
+        proxy: Optional[Union[str, List[str]]] = None,
+        use_cookies: bool = True,
+        max_request_try_count: int = 1,
+        sleep_s_between_failed_requests: Optional[float] = 0.5,
+        extra_headers: Optional[Dict[str, any]] = None,
+        debug: Optional[bool] = None
+    ) -> Optional[Response]:
+        return self.__request(
+            url,
+            RequestMethod.GET,
+            user_agent=user_agent,
+            proxy=proxy,
+            use_cookies=use_cookies,
+            max_request_try_count=max_request_try_count,
+            sleep_s_between_failed_requests=sleep_s_between_failed_requests,
+            extra_headers=extra_headers,
+            debug=debug
+        )
     
-    def post(self, url: str, body: dict, extra_headers: Optional[Dict[str, any]] = None) -> Optional[Response]:
-        return self.__request(url, RequestMethod.POST, extra_headers, body)
+    def post(
+        self,
+        url: str,
+        body: dict,
+        user_agent: Optional[Union[str, List[str]]] = None,
+        proxy: Optional[Union[str, List[str]]] = None,
+        use_cookies: bool = True,
+        max_request_try_count: int = 1,
+        sleep_s_between_failed_requests: Optional[float] = None,
+        extra_headers: Optional[Dict[str, any]] = None,
+        debug: Optional[bool] = None
+    ) -> Optional[Response]:
+        return self.__request(
+            url,
+            RequestMethod.POST,
+            user_agent=user_agent,
+            proxy=proxy,
+            use_cookies=use_cookies,
+            max_request_try_count=max_request_try_count,
+            sleep_s_between_failed_requests=sleep_s_between_failed_requests,
+            extra_headers=extra_headers,
+            body=body,
+            debug=debug
+        )
 
     # ------------------------------------------------------- Private methods -------------------------------------------------------- #
 
@@ -76,8 +123,14 @@ class Request:
         self,
         url: str,
         method: RequestMethod,
+        user_agent: Optional[Union[str, List[str]]] = None,
+        proxy: Optional[Union[str, List[str]]] = None,
+        use_cookies: bool = True,
+        max_request_try_count: int = 1,
+        sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
-        body: Optional[dict] = None
+        body: Optional[dict] = None,
+        debug: Optional[bool] = None
     ) -> Optional[Response]:
         headers = copy.deepcopy(self.default_headers)
 
@@ -97,22 +150,28 @@ class Request:
 
                 extra_headers[k] = v
 
-        if self.cookies:
+        if use_cookies and self.cookies:
             headers['Cookie'] = self.cookies
+
+        if type(proxy) == list:
+            proxy = random.choice(proxy) if len(proxy) > 0 else None
+
+        if type(user_agent) == list:
+            user_agent = random.choice(user_agent) if len(user_agent) > 0 else None
 
         res = request(
             url,
             method,
             headers=headers,
-            user_agent=self.user_agent,
+            user_agent=user_agent or self.user_agent,
             data=body,
-            debug=self.debug,
-            max_request_try_count=self.max_request_try_count,
-            sleep_time=self.sleep_s_between_failed_requests,
-            proxy=self.proxy
+            debug=debug if debug is not None else self.debug,
+            max_request_try_count=max_request_try_count or self.max_request_try_count,
+            sleep_time=sleep_s_between_failed_requests or self.sleep_s_between_failed_requests,
+            proxy=proxy or self.proxy
         )
 
-        if self.keep_cookies and res and res.cookies:
+        if use_cookies and self.keep_cookies and res and res.cookies:
             cookie_strs = []
 
             for k, v in res.cookies.get_dict().items():
