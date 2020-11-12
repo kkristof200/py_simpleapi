@@ -9,7 +9,7 @@ else:
 
 setuptools.setup(
     name="ksimpleapi",
-    version="0.0.8",
+    version="0.0.9",
     author="Kristof",
     description="ksimpleapi",
     long_description=long_description,

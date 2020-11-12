@@ -114,7 +114,7 @@ class Api:
         sleep_s_between_failed_requests: Optional[float] = 0.5,
         extra_headers: Optional[Dict[str, any]] = None,
         debug: Optional[bool] = None
-    ):
+    ) -> Optional[Response]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._get(
             url,
             user_agent=user_agent,
@@ -161,13 +161,107 @@ class Api:
         sleep_s_between_failed_requests: Optional[float] = 0.5,
         extra_headers: Optional[Dict[str, any]] = None,
         debug: Optional[bool] = None
-    ):
+    ) -> Optional[Response]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._post(
             url,
             body,
             user_agent=user_agent,
             proxy=proxy,
             use_cookies=False,
+            max_request_try_count=max_request_try_count,
+            sleep_s_between_failed_requests=sleep_s_between_failed_requests,
+            extra_headers=extra_headers,
+            debug=debug
+        )
+    
+    def download(
+        self,
+        url: str,
+        path: str,
+        user_agent: Optional[Union[str, List[str]]] = None,
+        proxy: Optional[Union[str, List[str]]] = None,
+        use_cookies: bool = True,
+        max_request_try_count: int = 1,
+        sleep_s_between_failed_requests: Optional[float] = None,
+        extra_headers: Optional[Dict[str, any]] = None,
+        debug: Optional[bool] = None
+    ) -> List[bool]:
+        return self._request.download(
+            url,
+            path,
+            user_agent=user_agent,
+            proxy=proxy,
+            use_cookies=use_cookies,
+            max_request_try_count=max_request_try_count,
+            sleep_s_between_failed_requests=sleep_s_between_failed_requests,
+            extra_headers=extra_headers,
+            debug=debug
+        )
+
+    @classmethod
+    def download_cls(
+        cls,
+        url: str,
+        path: str,
+        user_agent: Optional[Union[str, List[str]]] = None,
+        proxy: Optional[Union[str, List[str]]] = None,
+        use_cookies: bool = True,
+        max_request_try_count: int = 1,
+        sleep_s_between_failed_requests: Optional[float] = None,
+        extra_headers: Optional[Dict[str, any]] = None,
+        debug: Optional[bool] = None
+    ) -> List[bool]:
+        return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers()).download(
+            url,
+            path,
+            user_agent=user_agent,
+            proxy=proxy,
+            use_cookies=use_cookies,
+            max_request_try_count=max_request_try_count,
+            sleep_s_between_failed_requests=sleep_s_between_failed_requests,
+            extra_headers=extra_headers,
+            debug=debug
+        )
+
+    def download_async(
+        self,
+        urls_paths: Optional[Dict[str, str]] = None,
+        user_agent: Optional[Union[str, List[str]]] = None,
+        proxy: Optional[Union[str, List[str]]] = None,
+        use_cookies: bool = True,
+        max_request_try_count: int = 1,
+        sleep_s_between_failed_requests: Optional[float] = None,
+        extra_headers: Optional[Dict[str, any]] = None,
+        debug: Optional[bool] = None
+    ) -> List[bool]:
+        return self._request.download_async(
+            urls_paths,
+            user_agent=user_agent,
+            proxy=proxy,
+            use_cookies=use_cookies,
+            max_request_try_count=max_request_try_count,
+            sleep_s_between_failed_requests=sleep_s_between_failed_requests,
+            extra_headers=extra_headers,
+            debug=debug
+        )
+
+    @classmethod
+    def download_async_cls(
+        cls,
+        urls_paths: Optional[Dict[str, str]] = None,
+        user_agent: Optional[Union[str, List[str]]] = None,
+        proxy: Optional[Union[str, List[str]]] = None,
+        use_cookies: bool = True,
+        max_request_try_count: int = 1,
+        sleep_s_between_failed_requests: Optional[float] = None,
+        extra_headers: Optional[Dict[str, any]] = None,
+        debug: Optional[bool] = None
+    ) -> List[bool]:
+        return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers()).download_async(
+            urls_paths,
+            user_agent=user_agent,
+            proxy=proxy,
+            use_cookies=use_cookies,
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,

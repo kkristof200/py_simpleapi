@@ -6,7 +6,7 @@ from requests import Response
 import random, copy
 
 # Pip
-from kcu.request import request, RequestMethod
+from kcu.request import request, req_download, req_multi_download, RequestMethod
 
 # ---------------------------------------------------------------------------------------------------------------------------------------- #
 
@@ -41,33 +41,21 @@ class Request:
             user_agent = random.choice(user_agent) if len(user_agent) > 0 else None
 
         self.user_agent = user_agent
+        self.last_used_user_agent = None
 
         if type(proxy) == list:
             proxy = random.choice(proxy) if len(proxy) > 0 else None
 
         self.proxy = proxy
+        self.last_used_proxy = None
 
         self.default_headers = {}
 
-        if default_headers:
-            for k, v in default_headers.items():
-                if not v:
-                    continue
-
-                if type(v) != str:
-                    v = str(v)
-
-                self.default_headers[k] = v
-
-        if extra_headers:
-            for k, v in extra_headers.items():
-                if not v:
-                    continue
-
-                if type(v) != str:
-                    v = str(v)
-
-                self.default_headers[k] = v
+        self.default_headers = self.__generate_headers(
+            url=None,
+            default_headers=default_headers,
+            extra_headers=extra_headers
+        )
 
     def get(
         self,
@@ -117,6 +105,65 @@ class Request:
             debug=debug
         )
 
+    def download_async(
+        self,
+        urls_paths: Optional[Dict[str, str]] = None,
+        user_agent: Optional[Union[str, List[str]]] = None,
+        proxy: Optional[Union[str, List[str]]] = None,
+        use_cookies: bool = True,
+        max_request_try_count: int = 1,
+        sleep_s_between_failed_requests: Optional[float] = None,
+        extra_headers: Optional[Dict[str, any]] = None,
+        debug: Optional[bool] = None
+    ) -> List[bool]:
+        headers = self.__generate_headers(
+            default_headers=self.default_headers,
+            extra_headers=extra_headers,
+            cookies=self.cookies,
+            use_cookies=use_cookies
+        )
+
+        return req_multi_download(
+            urls_paths,
+            headers=headers,
+            user_agent=self.__get_user_agent(user_agent, use_cookies),
+            debug=debug if debug is not None else self.debug,
+            max_request_try_count=max_request_try_count or self.max_request_try_count,
+            sleep_time=sleep_s_between_failed_requests or self.sleep_s_between_failed_requests,
+            proxy=self.__get_proxy(proxy, use_cookies)
+        )
+
+    def download(
+        self,
+        url: str,
+        path: str,
+        user_agent: Optional[Union[str, List[str]]] = None,
+        proxy: Optional[Union[str, List[str]]] = None,
+        use_cookies: bool = True,
+        max_request_try_count: int = 1,
+        sleep_s_between_failed_requests: Optional[float] = None,
+        extra_headers: Optional[Dict[str, any]] = None,
+        debug: Optional[bool] = None
+    ) -> bool:
+        headers = self.__generate_headers(
+            url=url,
+            default_headers=self.default_headers,
+            extra_headers=extra_headers,
+            cookies=self.cookies,
+            use_cookies=use_cookies
+        )
+
+        return req_download(
+            url,
+            path,
+            headers=headers,
+            user_agent=self.__get_user_agent(user_agent, use_cookies),
+            debug=debug if debug is not None else self.debug,
+            max_request_try_count=max_request_try_count or self.max_request_try_count,
+            sleep_time=sleep_s_between_failed_requests or self.sleep_s_between_failed_requests,
+            proxy=self.__get_proxy(proxy, use_cookies)
+        )
+
     # ------------------------------------------------------- Private methods -------------------------------------------------------- #
 
     def __request(
@@ -132,13 +179,84 @@ class Request:
         body: Optional[dict] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
-        headers = copy.deepcopy(self.default_headers)
+        headers = self.__generate_headers(
+            url=url,
+            default_headers=self.default_headers,
+            extra_headers=extra_headers,
+            cookies=self.cookies,
+            use_cookies=use_cookies
+        )
 
-        if 'Host' not in headers or not headers['Host']:
-            host = self.__get_host(url)
+        res = request(
+            url,
+            method,
+            headers=headers,
+            user_agent=self.__get_user_agent(user_agent, use_cookies),
+            data=body,
+            debug=debug if debug is not None else self.debug,
+            max_request_try_count=max_request_try_count or self.max_request_try_count,
+            sleep_time=sleep_s_between_failed_requests or self.sleep_s_between_failed_requests,
+            proxy=self.__get_proxy(proxy, use_cookies)
+        )
 
-            if host:
-                headers['Host'] = host
+        if use_cookies and self.keep_cookies and res and res.cookies:
+            self.cookies = res.cookies
+
+        return res
+    
+    def __get_proxy(
+        self,
+        proxy: Optional[Union[str, List[str]]],
+        use_cookies: bool
+    ) -> Optional[str]:
+        proxy = proxy or self.proxy
+
+        if type(proxy) == list:
+            proxy = random.choice(proxy) if len(proxy) > 0 else None
+
+        if use_cookies and self.last_used_proxy:
+            proxy = self.last_used_proxy
+        elif not self.last_used_proxy:
+            self.last_used_proxy = proxy
+        
+        return proxy
+    
+    def __get_user_agent(
+        self,
+        user_agent: Optional[Union[str, List[str]]],
+        use_cookies: bool
+    ) -> Optional[str]:
+        user_agent = user_agent or self.user_agent
+
+        if type(user_agent) == list:
+            user_agent = random.choice(user_agent) if len(user_agent) > 0 else None
+
+        if use_cookies and self.last_used_user_agent:
+            user_agent = self.last_used_user_agent
+        elif not self.last_used_user_agent:
+            self.last_used_user_agent = user_agent
+
+        return user_agent
+
+    def __generate_headers(
+        self,
+        url: Optional[str] = None,
+        default_headers: Optional[Dict[str, any]] = None,
+        extra_headers: Optional[Dict[str, any]] = None,
+        cookies: Optional = None,
+        use_cookies: bool = False
+    ) -> Dict[str, str]:
+        headers = {}
+
+        if default_headers:
+            for k, v in default_headers.items():
+                if not v:
+                    continue
+
+                if type(v) != str:
+                    v = str(v)
+
+                headers[k] = v
 
         if extra_headers:
             for k, v in extra_headers.items():
@@ -148,38 +266,24 @@ class Request:
                 if type(v) != str:
                     v = str(v)
 
-                extra_headers[k] = v
+                headers[k] = v
 
-        if use_cookies and self.cookies:
-            headers['Cookie'] = self.cookies
+        if url and ('Host' not in headers or not headers['Host']):
+            host = self.__get_host(url)
 
-        if type(proxy) == list:
-            proxy = random.choice(proxy) if len(proxy) > 0 else None
+            if host:
+                headers['Host'] = host
 
-        if type(user_agent) == list:
-            user_agent = random.choice(user_agent) if len(user_agent) > 0 else None
-
-        res = request(
-            url,
-            method,
-            headers=headers,
-            user_agent=user_agent or self.user_agent,
-            data=body,
-            debug=debug if debug is not None else self.debug,
-            max_request_try_count=max_request_try_count or self.max_request_try_count,
-            sleep_time=sleep_s_between_failed_requests or self.sleep_s_between_failed_requests,
-            proxy=proxy or self.proxy
-        )
-
-        if use_cookies and self.keep_cookies and res and res.cookies:
+        if use_cookies and cookies:
             cookie_strs = []
 
-            for k, v in res.cookies.get_dict().items():
+            for k, v in cookies.get_dict().items():
                 cookie_strs.append(k+'='+v)
 
-            self.cookies = '; '.join(cookie_strs)
+            if len(cookie_strs) > 0:
+                headers['Cookie'] = '; '.join(cookie_strs)
 
-        return res
+        return headers
 
     def __get_host(self, url: str) -> Optional[str]:
         try:
