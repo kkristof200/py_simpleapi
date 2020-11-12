@@ -91,7 +91,7 @@ class Api:
         max_request_try_count: int = 1,
         sleep_s_between_failed_requests: Optional[float] = 0.5,
         extra_headers: Optional[Dict[str, any]] = None,
-        debug: bool = False
+        debug: Optional[bool] = None
     ) -> Optional[Response]:
         return self._request.get(
             url,
@@ -113,7 +113,7 @@ class Api:
         max_request_try_count: int = 1,
         sleep_s_between_failed_requests: Optional[float] = 0.5,
         extra_headers: Optional[Dict[str, any]] = None,
-        debug: bool = False
+        debug: Optional[bool] = None
     ):
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._get(
             url,
@@ -136,7 +136,7 @@ class Api:
         max_request_try_count: int = 1,
         sleep_s_between_failed_requests: Optional[float] = 0.5,
         extra_headers: Optional[Dict[str, any]] = None,
-        debug: bool = False
+        debug: Optional[bool] = None
     ) -> Optional[Response]:
         return self._request.post(
             url,
@@ -160,7 +160,7 @@ class Api:
         max_request_try_count: int = 1,
         sleep_s_between_failed_requests: Optional[float] = 0.5,
         extra_headers: Optional[Dict[str, any]] = None,
-        debug: bool = False
+        debug: Optional[bool] = None
     ):
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._post(
             url,
