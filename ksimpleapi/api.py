@@ -88,8 +88,8 @@ class Api:
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         use_cookies: bool = True,
-        max_request_try_count: int = 1,
-        sleep_s_between_failed_requests: Optional[float] = 0.5,
+        max_request_try_count: Optional[int] = None,
+        sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
@@ -110,8 +110,8 @@ class Api:
         url: str,
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
-        max_request_try_count: int = 1,
-        sleep_s_between_failed_requests: Optional[float] = 0.5,
+        max_request_try_count: Optional[int] = None,
+        sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
@@ -133,8 +133,8 @@ class Api:
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         use_cookies: bool = True,
-        max_request_try_count: int = 1,
-        sleep_s_between_failed_requests: Optional[float] = 0.5,
+        max_request_try_count: Optional[int] = None,
+        sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
@@ -157,8 +157,8 @@ class Api:
         body: dict,
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
-        max_request_try_count: int = 1,
-        sleep_s_between_failed_requests: Optional[float] = 0.5,
+        max_request_try_count: Optional[int] = None,
+        sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
@@ -181,7 +181,7 @@ class Api:
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         use_cookies: bool = True,
-        max_request_try_count: int = 1,
+        max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         debug: Optional[bool] = None
@@ -205,8 +205,7 @@ class Api:
         path: str,
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
-        use_cookies: bool = True,
-        max_request_try_count: int = 1,
+        max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         debug: Optional[bool] = None
@@ -216,7 +215,7 @@ class Api:
             path,
             user_agent=user_agent,
             proxy=proxy,
-            use_cookies=use_cookies,
+            use_cookies=False,
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
@@ -229,7 +228,7 @@ class Api:
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         use_cookies: bool = True,
-        max_request_try_count: int = 1,
+        max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         debug: Optional[bool] = None
@@ -251,8 +250,7 @@ class Api:
         urls_paths: Optional[Dict[str, str]] = None,
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
-        use_cookies: bool = True,
-        max_request_try_count: int = 1,
+        max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         debug: Optional[bool] = None
@@ -261,7 +259,7 @@ class Api:
             urls_paths,
             user_agent=user_agent,
             proxy=proxy,
-            use_cookies=use_cookies,
+            use_cookies=False,
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,

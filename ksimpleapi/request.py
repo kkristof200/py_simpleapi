@@ -63,7 +63,7 @@ class Request:
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         use_cookies: bool = True,
-        max_request_try_count: int = 1,
+        max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = 0.5,
         extra_headers: Optional[Dict[str, any]] = None,
         debug: Optional[bool] = None
@@ -87,7 +87,7 @@ class Request:
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         use_cookies: bool = True,
-        max_request_try_count: int = 1,
+        max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         debug: Optional[bool] = None
@@ -111,7 +111,7 @@ class Request:
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         use_cookies: bool = True,
-        max_request_try_count: int = 1,
+        max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         debug: Optional[bool] = None
@@ -128,8 +128,8 @@ class Request:
             headers=headers,
             user_agent=self.__get_user_agent(user_agent, use_cookies),
             debug=debug if debug is not None else self.debug,
-            max_request_try_count=max_request_try_count or self.max_request_try_count,
-            sleep_time=sleep_s_between_failed_requests or self.sleep_s_between_failed_requests,
+            max_request_try_count=max_request_try_count if max_request_try_count is not None else self.max_request_try_count,
+            sleep_time=sleep_s_between_failed_requests if sleep_s_between_failed_requests is not None else self.sleep_s_between_failed_requests,
             proxy=self.__get_proxy(proxy, use_cookies)
         )
 
@@ -140,7 +140,7 @@ class Request:
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         use_cookies: bool = True,
-        max_request_try_count: int = 1,
+        max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         debug: Optional[bool] = None
@@ -173,7 +173,7 @@ class Request:
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         use_cookies: bool = True,
-        max_request_try_count: int = 1,
+        max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         body: Optional[dict] = None,
@@ -194,8 +194,8 @@ class Request:
             user_agent=self.__get_user_agent(user_agent, use_cookies),
             data=body,
             debug=debug if debug is not None else self.debug,
-            max_request_try_count=max_request_try_count or self.max_request_try_count,
-            sleep_time=sleep_s_between_failed_requests or self.sleep_s_between_failed_requests,
+            max_request_try_count=max_request_try_count if max_request_try_count is not None else self.max_request_try_count,
+            sleep_time=sleep_s_between_failed_requests if sleep_s_between_failed_requests is not None else self.sleep_s_between_failed_requests,
             proxy=self.__get_proxy(proxy, use_cookies)
         )
 
