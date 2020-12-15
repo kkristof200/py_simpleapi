@@ -348,7 +348,7 @@ class Request:
                 headers['Host'] = host
 
         if use_cookies and all_cookies:
-            cookies_url = self.__clean_url(url)
+            cookies_url = self._clean_url(url)
 
             if cookies_url in all_cookies:
                 cookie_strs = ['{}={}'.format(k, v) for k, v in all_cookies[cookies_url].items()]
