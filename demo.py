@@ -11,7 +11,7 @@ class RandomApi(Api):
 
 
     @classmethod
-    def extra_headers(self) -> Optional[Dict[str, any]]:
+    def extra_headers(cls) -> Optional[Dict[str, any]]:
         return {
             'Accept': 'json'
         }

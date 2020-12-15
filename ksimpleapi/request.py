@@ -147,7 +147,7 @@ class Request:
         headers = self.__generate_headers(
             default_headers=self.default_headers,
             extra_headers=extra_headers,
-            cookies=self.cookies,
+            all_cookies=self.cookies,
             use_cookies=use_cookies
         )
 
