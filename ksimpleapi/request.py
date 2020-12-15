@@ -272,7 +272,7 @@ class Request:
         )
 
         if use_cookies and self.keep_cookies and res and res.cookies:
-            self._set_cookies_for_url(url, res.cookies.get_dict(), save=self.cookies_path != None)
+            self._set_cookies_for_url(url, res.cookies.get_dict(), save=self._cookies_path != None)
 
         return res
 
