@@ -216,10 +216,11 @@ class Request:
             self.__save_cookies()
 
     def __save_cookies(self):
-        cookies_path = self.__cookies_path()
+        if not self._cookies_path:
+            return
 
         try:
-            os.remove(cookies_path)
+            os.remove(self._cookies_path)
         except:
             pass
 
@@ -228,7 +229,7 @@ class Request:
 
         pickle.dump(
             self.cookies,
-            open(self.__cookies_path(), 'wb')
+            open(self.self._cookies_path, 'wb')
         )
 
     def _load_cookies(self) -> Optional[Dict[str, Dict[str, str]]]:
