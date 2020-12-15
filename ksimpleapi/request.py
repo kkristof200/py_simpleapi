@@ -30,6 +30,7 @@ class Request:
         keep_cookies: bool = True,
         default_cookies: Optional[Dict[str, Dict[str, str]]] = None,
         cookies_file_path: Optional[str] = None,
+        allow_redirects: bool = True,
         debug: bool = False
     ):
         self._cookies_path = cookies_file_path
@@ -45,6 +46,7 @@ class Request:
 
         self.keep_cookies = keep_cookies
         self.debug = debug
+        self.allow_redirects = allow_redirects
 
         if type(user_agent) == list:
             user_agent = random.choice(user_agent) if len(user_agent) > 0 else None
@@ -76,6 +78,7 @@ class Request:
         sleep_s_between_failed_requests: Optional[float] = 0.5,
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return self.__request(
@@ -88,6 +91,7 @@ class Request:
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
+            allow_redirects=allow_redirects,
             debug=debug
         )
 
@@ -102,6 +106,7 @@ class Request:
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return self.__request(
@@ -114,6 +119,7 @@ class Request:
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
+            allow_redirects=allow_redirects,
             body=body,
             debug=debug
         )
@@ -129,6 +135,7 @@ class Request:
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return self.__request(
@@ -141,6 +148,7 @@ class Request:
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
+            allow_redirects=allow_redirects,
             body=body,
             debug=debug
         )
@@ -155,6 +163,7 @@ class Request:
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None
     ) -> List[bool]:
         headers = self.__generate_headers(
@@ -172,7 +181,8 @@ class Request:
             debug=debug if debug is not None else self.debug,
             max_request_try_count=max_request_try_count if max_request_try_count is not None else self.max_request_try_count,
             sleep_time=sleep_s_between_failed_requests if sleep_s_between_failed_requests is not None else self.sleep_s_between_failed_requests,
-            proxy=self.__get_proxy(proxy, use_cookies)
+            proxy=self.__get_proxy(proxy, use_cookies),
+            allow_redirects=allow_redirects if allow_redirects is not None else self.allow_redirects
         )
 
     def download(
@@ -186,6 +196,7 @@ class Request:
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None
     ) -> bool:
         headers = self.__generate_headers(
@@ -205,7 +216,8 @@ class Request:
             debug=debug if debug is not None else self.debug,
             max_request_try_count=max_request_try_count or self.max_request_try_count,
             sleep_time=sleep_s_between_failed_requests or self.sleep_s_between_failed_requests,
-            proxy=self.__get_proxy(proxy, use_cookies)
+            proxy=self.__get_proxy(proxy, use_cookies),
+            allow_redirects=allow_redirects if allow_redirects is not None else self.allow_redirects
         )
 
 
@@ -266,6 +278,7 @@ class Request:
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: Optional[bool] = None,
         body: Optional[dict] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
@@ -287,7 +300,8 @@ class Request:
             debug=debug if debug is not None else self.debug,
             max_request_try_count=max_request_try_count if max_request_try_count is not None else self.max_request_try_count,
             sleep_time=sleep_s_between_failed_requests if sleep_s_between_failed_requests is not None else self.sleep_s_between_failed_requests,
-            proxy=self.__get_proxy(proxy, use_cookies)
+            proxy=self.__get_proxy(proxy, use_cookies),
+            allow_redirects=allow_redirects if allow_redirects is not None else self.allow_redirects
         )
 
         if use_cookies and self.keep_cookies and res and res.cookies:

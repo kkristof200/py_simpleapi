@@ -30,6 +30,7 @@ class Api:
         sleep_s_between_failed_requests: Optional[float] = 0.5,
         default_headers: Optional[Dict[str, any]] = None,
         extra_headers: Optional[Dict[str, any]] = None,
+        allow_redirects: bool = True,
         debug: bool = False
     ):
         """init function
@@ -42,6 +43,7 @@ class Api:
             cookies_file_path (str, optional): If provided, cookies will be saved to/loaded from it. Defaults to None.
             max_request_try_count (int, optional): How many times does a request can be tried (if fails). Defaults to 1.
             sleep_s_between_failed_requests (Optional[float], optional): How much to wait between requests when retrying. Defaults to 0.5.
+            allow_redirects (bool, optional): Wether requests allow redirects or no. Defaults to True.
             debug (bool, optional): Show debug logs. Defaults to False.
         """
         self._request = Request(
@@ -54,6 +56,7 @@ class Api:
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             default_headers=default_headers or self.default_headers(),
             extra_headers=extra_headers or self.extra_headers(),
+            allow_redirects=allow_redirects,
             debug=debug
         )
 
@@ -99,6 +102,7 @@ class Api:
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return self._request.get(
@@ -123,6 +127,7 @@ class Api:
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._get(
@@ -134,6 +139,7 @@ class Api:
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
             extra_cookies=extra_cookies,
+            allow_redirects=allow_redirects,
             debug=debug
         )
 
@@ -148,6 +154,7 @@ class Api:
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return self._request.post(
@@ -174,6 +181,7 @@ class Api:
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._post(
@@ -186,6 +194,7 @@ class Api:
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
             extra_cookies=extra_cookies,
+            allow_redirects=allow_redirects,
             debug=debug
         )
     
@@ -200,6 +209,7 @@ class Api:
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return self._request.put(
@@ -226,6 +236,7 @@ class Api:
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._put(
@@ -238,6 +249,7 @@ class Api:
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
             extra_cookies=extra_cookies,
+            allow_redirects=allow_redirects,
             debug=debug
         )
     
@@ -252,6 +264,7 @@ class Api:
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None
     ) -> List[bool]:
         return self._request.download(
@@ -278,6 +291,7 @@ class Api:
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None
     ) -> List[bool]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers()).download(
@@ -290,6 +304,7 @@ class Api:
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
             extra_cookies=extra_cookies,
+            allow_redirects=allow_redirects,
             debug=debug
         )
 
@@ -303,6 +318,7 @@ class Api:
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None
     ) -> List[bool]:
         return self._request.download_async(
@@ -327,6 +343,7 @@ class Api:
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: bool = True,
         debug: Optional[bool] = None
     ) -> List[bool]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers()).download_async(
@@ -338,6 +355,7 @@ class Api:
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
             extra_cookies=extra_cookies,
+            allow_redirects=allow_redirects,
             debug=debug
         )
 
