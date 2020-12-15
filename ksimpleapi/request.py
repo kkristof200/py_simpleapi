@@ -238,7 +238,12 @@ class Request:
 
     def _set_cookies_for_url(self, url: str, cookies: Dict[str, str], save: bool = False):
         self.cookies = self.cookies or {}
-        self.cookies.update({self._clean_url(url):cookies})
+        url = self._clean_url(url)
+
+        if url not in self.cookies:
+            self.cookies[url] = cookies
+        else:
+            self.cookies[url].update(cookies)
 
         if save:
             self.__save_cookies()
