@@ -229,7 +229,7 @@ class Request:
 
         pickle.dump(
             self.cookies,
-            open(self.self._cookies_path, 'wb')
+            open(self._cookies_path, 'wb')
         )
 
     def _load_cookies(self) -> Optional[Dict[str, Dict[str, str]]]:
