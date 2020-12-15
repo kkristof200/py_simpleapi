@@ -177,7 +177,7 @@ class Request:
             url=url,
             default_headers=self.default_headers,
             extra_headers=extra_headers,
-            cookies=self.cookies,
+            all_cookies=self.cookies,
             use_cookies=use_cookies
         )
 
@@ -255,7 +255,7 @@ class Request:
             url=url,
             default_headers=self.default_headers,
             extra_headers=extra_headers,
-            cookies=self.cookies,
+            all_cookies=self.cookies,
             use_cookies=use_cookies
         )
 
