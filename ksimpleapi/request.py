@@ -196,7 +196,7 @@ class Request:
     # ------------------------------------------------------- Private methods -------------------------------------------------------- #
 
     def _clean_url(self, url: str) -> str:
-        url_comps = tldextract.extract(self.driver.current_url)
+        url_comps = tldextract.extract(url)
 
         return url_comps.domain + '.' + url_comps.suffix
 
