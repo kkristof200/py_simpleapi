@@ -23,6 +23,7 @@ class Api:
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         keep_cookies: bool = False,
+        default_cookies: Optional[Dict[str, Dict[str, str]]] = None,
         cookies_file_path: Optional[str] = None,
         store_pickled_cookies: bool = False,
         max_request_try_count: int = 1,
@@ -37,6 +38,7 @@ class Api:
             user_agent (Optional[Union[str, List[str]]], optional): User agent(s) to use for requests. If list is provided, one will be chosen randomly. Defaults to None.
             proxy (Optional[Union[str, List[str]]], optional): Proxy/Proxies to use for requests. If list is provided, one will be chosen randomly. Defaults to None.
             keep_cookies (bool, optional): Keep cookies for requests and reuse them at next one. Defaults to True.
+            default_cookies (Optional[Dict[str, Dict[str, str]]], optional): Default cookies to start with. Defaults to None.
             cookies_file_path (str, optional): If provided, cookies will be saved to/loaded from it. Defaults to None.
             max_request_try_count (int, optional): How many times does a request can be tried (if fails). Defaults to 1.
             sleep_s_between_failed_requests (Optional[float], optional): How much to wait between requests when retrying. Defaults to 0.5.
@@ -46,6 +48,7 @@ class Api:
             user_agent=user_agent,
             proxy=proxy,
             keep_cookies=keep_cookies,
+            default_cookies=default_cookies,
             cookies_file_path=cookies_file_path,
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
@@ -95,6 +98,7 @@ class Api:
         max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return self._request.get(
@@ -105,6 +109,7 @@ class Api:
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
+            extra_cookies=extra_cookies,
             debug=debug
         )
 
@@ -117,6 +122,7 @@ class Api:
         max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._get(
@@ -127,6 +133,7 @@ class Api:
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
+            extra_cookies=extra_cookies,
             debug=debug
         )
 
@@ -140,6 +147,7 @@ class Api:
         max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return self._request.post(
@@ -150,6 +158,7 @@ class Api:
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
+            extra_cookies=extra_cookies,
             body=body,
             debug=debug
         )
@@ -164,6 +173,7 @@ class Api:
         max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._post(
@@ -175,6 +185,7 @@ class Api:
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
+            extra_cookies=extra_cookies,
             debug=debug
         )
     
@@ -188,6 +199,7 @@ class Api:
         max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return self._request.put(
@@ -198,6 +210,7 @@ class Api:
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
+            extra_cookies=extra_cookies,
             body=body,
             debug=debug
         )
@@ -212,6 +225,7 @@ class Api:
         max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._put(
@@ -223,6 +237,7 @@ class Api:
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
+            extra_cookies=extra_cookies,
             debug=debug
         )
     
@@ -236,6 +251,7 @@ class Api:
         max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
         debug: Optional[bool] = None
     ) -> List[bool]:
         return self._request.download(
@@ -247,6 +263,7 @@ class Api:
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
+            extra_cookies=extra_cookies,
             debug=debug
         )
 
@@ -260,6 +277,7 @@ class Api:
         max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
         debug: Optional[bool] = None
     ) -> List[bool]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers()).download(
@@ -271,6 +289,7 @@ class Api:
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
+            extra_cookies=extra_cookies,
             debug=debug
         )
 
@@ -283,6 +302,7 @@ class Api:
         max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
         debug: Optional[bool] = None
     ) -> List[bool]:
         return self._request.download_async(
@@ -293,6 +313,7 @@ class Api:
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
+            extra_cookies=extra_cookies,
             debug=debug
         )
 
@@ -305,6 +326,7 @@ class Api:
         max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
         debug: Optional[bool] = None
     ) -> List[bool]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers()).download_async(
@@ -315,6 +337,7 @@ class Api:
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
+            extra_cookies=extra_cookies,
             debug=debug
         )
 

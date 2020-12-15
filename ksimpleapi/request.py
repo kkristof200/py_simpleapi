@@ -28,11 +28,17 @@ class Request:
         max_request_try_count: int = 1,
         sleep_s_between_failed_requests: Optional[float] = 0.5,
         keep_cookies: bool = True,
+        default_cookies: Optional[Dict[str, Dict[str, str]]] = None,
         cookies_file_path: Optional[str] = None,
         debug: bool = False
     ):
         self._cookies_path = cookies_file_path
         self.cookies = self._load_cookies()
+
+        if default_cookies:
+            self.cookies = self.cookies or {}
+            self.cookies.update(default_cookies)
+            self.__save_cookies()
 
         self.max_request_try_count = max_request_try_count
         self.sleep_s_between_failed_requests = sleep_s_between_failed_requests
@@ -69,6 +75,7 @@ class Request:
         max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = 0.5,
         extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return self.__request(
@@ -77,6 +84,7 @@ class Request:
             user_agent=user_agent,
             proxy=proxy,
             use_cookies=use_cookies,
+            extra_cookies=extra_cookies,
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
@@ -93,6 +101,7 @@ class Request:
         max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return self.__request(
@@ -101,6 +110,7 @@ class Request:
             user_agent=user_agent,
             proxy=proxy,
             use_cookies=use_cookies,
+            extra_cookies=extra_cookies,
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
@@ -118,6 +128,7 @@ class Request:
         max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return self.__request(
@@ -126,6 +137,7 @@ class Request:
             user_agent=user_agent,
             proxy=proxy,
             use_cookies=use_cookies,
+            extra_cookies=extra_cookies,
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
@@ -142,11 +154,13 @@ class Request:
         max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
         debug: Optional[bool] = None
     ) -> List[bool]:
         headers = self.__generate_headers(
             default_headers=self.default_headers,
             extra_headers=extra_headers,
+            extra_cookies=extra_cookies,
             all_cookies=self.cookies,
             use_cookies=use_cookies
         )
@@ -171,12 +185,14 @@ class Request:
         max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
         debug: Optional[bool] = None
     ) -> bool:
         headers = self.__generate_headers(
             url=url,
             default_headers=self.default_headers,
             extra_headers=extra_headers,
+            extra_cookies=extra_cookies,
             all_cookies=self.cookies,
             use_cookies=use_cookies
         )
@@ -249,6 +265,7 @@ class Request:
         max_request_try_count: Optional[int] = None,
         sleep_s_between_failed_requests: Optional[float] = None,
         extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
         body: Optional[dict] = None,
         debug: Optional[bool] = None
     ) -> Optional[Response]:
@@ -257,6 +274,7 @@ class Request:
             default_headers=self.default_headers,
             extra_headers=extra_headers,
             all_cookies=self.cookies,
+            extra_cookies=extra_cookies,
             use_cookies=use_cookies
         )
 
@@ -316,7 +334,8 @@ class Request:
         url: Optional[str] = None,
         default_headers: Optional[Dict[str, any]] = None,
         extra_headers: Optional[Dict[str, any]] = None,
-        all_cookies: Optional[Union[str, List[str]]] = None,
+        all_cookies: Optional[Dict[str, Dict[str, str]]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
         use_cookies: bool = False
     ) -> Dict[str, str]:
         headers = {}
@@ -351,7 +370,12 @@ class Request:
             cookies_url = self._clean_url(url)
 
             if cookies_url in all_cookies:
-                cookie_strs = ['{}={}'.format(k, v) for k, v in all_cookies[cookies_url].items()]
+                cookies = all_cookies[cookies_url]
+
+                if extra_cookies:
+                    cookies.update(extra_cookies)
+
+                cookie_strs = ['{}={}'.format(k, v) for k, v in cookies.items()]
 
                 if len(cookie_strs) > 0:
                     headers['Cookie'] = '; '.join(cookie_strs)
