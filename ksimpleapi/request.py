@@ -28,22 +28,11 @@ class Request:
         max_request_try_count: int = 1,
         sleep_s_between_failed_requests: Optional[float] = 0.5,
         keep_cookies: bool = True,
-        cache_folder_path: Optional[str] = None,
+        cookies_file_path: Optional[str] = None,
         debug: bool = False
     ):
-        self.cache_folder_path = cache_folder_path
-
-        if cache_folder_path:
-            self._cookies_path = os.path.join(cache_folder_path, 'cookies.pkl')
-
-            if os.path.exists(self.cache_folder_path):
-                self.cookies = self._load_cookies()
-            else:
-                os.makedirs(self.cache_folder_path)
-                self.cookies = None
-        else:
-            self._cookies_path = None
-            self.cookies = None
+        self._cookies_path = cookies_file_path
+        self.cookies = self._load_cookies()
 
         self.max_request_try_count = max_request_try_count
         self.sleep_s_between_failed_requests = sleep_s_between_failed_requests
@@ -243,7 +232,7 @@ class Request:
         )
 
     def _load_cookies(self) -> Optional[Dict[str, Dict[str, str]]]:
-        if not self._cookies_path:
+        if not self._cookies_path or not os.path.exists(self._cookies_path):
             return None
 
         return pickle.load(open(self._cookies_path, 'rb'))

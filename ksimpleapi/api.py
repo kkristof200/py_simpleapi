@@ -23,7 +23,7 @@ class Api:
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         keep_cookies: bool = False,
-        cookies_path: Optional[str] = None,
+        cookies_file_path: Optional[str] = None,
         store_pickled_cookies: bool = False,
         max_request_try_count: int = 1,
         sleep_s_between_failed_requests: Optional[float] = 0.5,
@@ -37,6 +37,7 @@ class Api:
             user_agent (Optional[Union[str, List[str]]], optional): User agent(s) to use for requests. If list is provided, one will be chosen randomly. Defaults to None.
             proxy (Optional[Union[str, List[str]]], optional): Proxy/Proxies to use for requests. If list is provided, one will be chosen randomly. Defaults to None.
             keep_cookies (bool, optional): Keep cookies for requests and reuse them at next one. Defaults to True.
+            cookies_file_path (str, optional): If provided, cookies will be saved to/loaded from it. Defaults to None.
             max_request_try_count (int, optional): How many times does a request can be tried (if fails). Defaults to 1.
             sleep_s_between_failed_requests (Optional[float], optional): How much to wait between requests when retrying. Defaults to 0.5.
             debug (bool, optional): Show debug logs. Defaults to False.
@@ -45,6 +46,7 @@ class Api:
             user_agent=user_agent,
             proxy=proxy,
             keep_cookies=keep_cookies,
+            cookies_file_path=cookies_file_path,
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             default_headers=default_headers or self.default_headers(),
