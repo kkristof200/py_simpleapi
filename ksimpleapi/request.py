@@ -3,10 +3,11 @@
 # System
 from typing import Optional, List, Union, Dict
 from requests import Response
-import random, copy
+import random, copy, os, pickle
 
 # Pip
 from kcu.request import request, req_download, req_multi_download, RequestMethod
+import tldextract
 
 # ---------------------------------------------------------------------------------------------------------------------------------------- #
 
@@ -27,9 +28,22 @@ class Request:
         max_request_try_count: int = 1,
         sleep_s_between_failed_requests: Optional[float] = 0.5,
         keep_cookies: bool = True,
+        cache_folder_path: Optional[str] = None,
         debug: bool = False
     ):
-        self.cookies = None
+        self.cache_folder_path = cache_folder_path
+
+        if cache_folder_path:
+            self._cookies_path = os.path.join(cache_folder_path, 'cookies.pkl')
+
+            if os.path.exists(self.cache_folder_path):
+                self.cookies = self._load_cookies()
+            else:
+                os.makedirs(self.cache_folder_path)
+                self.cookies = None
+        else:
+            self._cookies_path = None
+            self.cookies = None
 
         self.max_request_try_count = max_request_try_count
         self.sleep_s_between_failed_requests = sleep_s_between_failed_requests
@@ -77,6 +91,31 @@ class Request:
             max_request_try_count=max_request_try_count,
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
+            debug=debug
+        )
+
+    def put(
+        self,
+        url: str,
+        body: dict,
+        user_agent: Optional[Union[str, List[str]]] = None,
+        proxy: Optional[Union[str, List[str]]] = None,
+        use_cookies: bool = True,
+        max_request_try_count: Optional[int] = None,
+        sleep_s_between_failed_requests: Optional[float] = None,
+        extra_headers: Optional[Dict[str, any]] = None,
+        debug: Optional[bool] = None
+    ) -> Optional[Response]:
+        return self.__request(
+            url,
+            RequestMethod.PUT,
+            user_agent=user_agent,
+            proxy=proxy,
+            use_cookies=use_cookies,
+            max_request_try_count=max_request_try_count,
+            sleep_s_between_failed_requests=sleep_s_between_failed_requests,
+            extra_headers=extra_headers,
+            body=body,
             debug=debug
         )
     
@@ -164,7 +203,51 @@ class Request:
             proxy=self.__get_proxy(proxy, use_cookies)
         )
 
+
     # ------------------------------------------------------- Private methods -------------------------------------------------------- #
+
+    def _clean_url(self, url: str) -> str:
+        url_comps = tldextract.extract(self.driver.current_url)
+
+        return url_comps.domain + '.' + url_comps.suffix
+
+    def _get_cookies_for_url(self, url: str) -> Optional[Dict[str, str]]:
+        url = self._clean_url(url)
+
+        return self.cookies[url] if url in self.cookies else None
+
+    def _save_cookies_for_url(self, url: str, cookies: Dict[str, str]):
+        self._set_cookies_for_url(url, cookies=cookies, save=True)
+
+    def _set_cookies_for_url(self, url: str, cookies: Dict[str, str], save: bool = False):
+        self.cookies = self.cookies or {}
+        self.cookies.update({self._clean_url(url):cookies})
+
+        if save:
+            self.__save_cookies()
+
+    def __save_cookies(self):
+        cookies_path = self.__cookies_path()
+
+        try:
+            os.remove(cookies_path)
+        except:
+            pass
+
+        if not self.cookies:
+            return
+
+        pickle.dump(
+            self.cookies,
+            open(self.__cookies_path(), 'wb')
+        )
+
+    def _load_cookies(self) -> Optional[Dict[str, Dict[str, str]]]:
+        if not self._cookies_path:
+            return None
+
+        return pickle.load(open(self._cookies_path, 'rb'))
+
 
     def __request(
         self,
@@ -200,10 +283,10 @@ class Request:
         )
 
         if use_cookies and self.keep_cookies and res and res.cookies:
-            self.cookies = res.cookies
+            self._set_cookies_for_url(url, res.cookies.get_dict(), save=self.cookies_path != None)
 
         return res
-    
+
     def __get_proxy(
         self,
         proxy: Optional[Union[str, List[str]]],
@@ -243,7 +326,7 @@ class Request:
         url: Optional[str] = None,
         default_headers: Optional[Dict[str, any]] = None,
         extra_headers: Optional[Dict[str, any]] = None,
-        cookies: Optional = None,
+        all_cookies: Optional[Union[str, List[str]]] = None,
         use_cookies: bool = False
     ) -> Dict[str, str]:
         headers = {}
@@ -274,14 +357,14 @@ class Request:
             if host:
                 headers['Host'] = host
 
-        if use_cookies and cookies:
-            cookie_strs = []
+        if use_cookies and all_cookies:
+            cookies_url = self.__clean_url(url)
 
-            for k, v in cookies.get_dict().items():
-                cookie_strs.append(k+'='+v)
+            if cookies_url in all_cookies:
+                cookie_strs = ['{}={}'.format(k, v) for k, v in all_cookies[cookies_url].items()]
 
-            if len(cookie_strs) > 0:
-                headers['Cookie'] = '; '.join(cookie_strs)
+                if len(cookie_strs) > 0:
+                    headers['Cookie'] = '; '.join(cookie_strs)
 
         return headers
 

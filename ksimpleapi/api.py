@@ -23,6 +23,8 @@ class Api:
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         keep_cookies: bool = False,
+        cookies_path: Optional[str] = None,
+        store_pickled_cookies: bool = False,
         max_request_try_count: int = 1,
         sleep_s_between_failed_requests: Optional[float] = 0.5,
         default_headers: Optional[Dict[str, any]] = None,
@@ -54,7 +56,7 @@ class Api:
     # ------------------------------------------------------ Public properties ------------------------------------------------------- #
 
     @classmethod
-    def default_headers(self) -> Optional[Dict[str, any]]:
+    def default_headers(cls) -> Optional[Dict[str, any]]:
         """ Default headers to use for every request.
             Overwrite this value as needed.
         """
@@ -72,7 +74,7 @@ class Api:
         }
 
     @classmethod
-    def extra_headers(self) -> Optional[Dict[str, any]]:
+    def extra_headers(cls) -> Optional[Dict[str, any]]:
         """ Every entry from this adds/overwrites an entry from 'default_headers'
             Overwrite this value as needed.
         """
@@ -163,6 +165,54 @@ class Api:
         debug: Optional[bool] = None
     ) -> Optional[Response]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._post(
+            url,
+            body,
+            user_agent=user_agent,
+            proxy=proxy,
+            use_cookies=False,
+            max_request_try_count=max_request_try_count,
+            sleep_s_between_failed_requests=sleep_s_between_failed_requests,
+            extra_headers=extra_headers,
+            debug=debug
+        )
+    
+    def _put(
+        self,
+        url: str,
+        body: dict,
+        user_agent: Optional[Union[str, List[str]]] = None,
+        proxy: Optional[Union[str, List[str]]] = None,
+        use_cookies: bool = True,
+        max_request_try_count: Optional[int] = None,
+        sleep_s_between_failed_requests: Optional[float] = None,
+        extra_headers: Optional[Dict[str, any]] = None,
+        debug: Optional[bool] = None
+    ) -> Optional[Response]:
+        return self._request.put(
+            url,
+            user_agent=user_agent,
+            proxy=proxy,
+            use_cookies=use_cookies,
+            max_request_try_count=max_request_try_count,
+            sleep_s_between_failed_requests=sleep_s_between_failed_requests,
+            extra_headers=extra_headers,
+            body=body,
+            debug=debug
+        )
+
+    @classmethod
+    def _put_cls(
+        cls,
+        url: str,
+        body: dict,
+        user_agent: Optional[Union[str, List[str]]] = None,
+        proxy: Optional[Union[str, List[str]]] = None,
+        max_request_try_count: Optional[int] = None,
+        sleep_s_between_failed_requests: Optional[float] = None,
+        extra_headers: Optional[Dict[str, any]] = None,
+        debug: Optional[bool] = None
+    ) -> Optional[Response]:
+        return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._put(
             url,
             body,
             user_agent=user_agent,
