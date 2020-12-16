@@ -69,17 +69,6 @@ class Request:
         )
 
 
-    # ------------------------------------------------------ Public properties ------------------------------------------------------- #
-
-    @property
-    def debug(self):
-        return self._request.debug
-
-    @debug.setter
-    def debug(self, val):
-        self._request.debug = val
-
-
     # -------------------------------------------------------- Public methods -------------------------------------------------------- #
 
     def get(

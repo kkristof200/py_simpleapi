@@ -63,6 +63,17 @@ class Api:
 
     # ------------------------------------------------------ Public properties ------------------------------------------------------- #
 
+    @property
+    def debug(self):
+        return self._request.debug
+
+    @debug.setter
+    def debug(self, val):
+        self._request.debug = val
+
+
+    # -------------------------------------------------------- Public methods -------------------------------------------------------- #
+
     @classmethod
     def default_headers(cls) -> Optional[Dict[str, any]]:
         """ Default headers to use for every request.
