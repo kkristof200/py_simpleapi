@@ -74,6 +74,7 @@ class Request:
     def get(
         self,
         url: str,
+        params: Optional[Dict] = None,
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         use_cookies: bool = True,
@@ -87,6 +88,7 @@ class Request:
         return self.__request(
             url,
             RequestMethod.GET,
+            params=params,
             user_agent=user_agent,
             proxy=proxy,
             use_cookies=use_cookies,
@@ -102,6 +104,7 @@ class Request:
         self,
         url: str,
         body: dict,
+        params: Optional[Dict] = None,
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         use_cookies: bool = True,
@@ -115,6 +118,7 @@ class Request:
         return self.__request(
             url,
             RequestMethod.PUT,
+            params=params,
             user_agent=user_agent,
             proxy=proxy,
             use_cookies=use_cookies,
@@ -131,6 +135,7 @@ class Request:
         self,
         url: str,
         body: dict,
+        params: Optional[Dict] = None,
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         use_cookies: bool = True,
@@ -144,6 +149,7 @@ class Request:
         return self.__request(
             url,
             RequestMethod.POST,
+            params=params,
             user_agent=user_agent,
             proxy=proxy,
             use_cookies=use_cookies,
@@ -279,6 +285,7 @@ class Request:
         self,
         url: str,
         method: RequestMethod,
+        params: Optional[Dict] = None,
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         use_cookies: bool = True,
@@ -302,6 +309,7 @@ class Request:
         res = request(
             url,
             method,
+            params=params,
             headers=headers,
             user_agent=self.__get_user_agent(user_agent, use_cookies),
             data=body,

@@ -106,6 +106,7 @@ class Api:
     def _get(
         self,
         url: str,
+        params: Optional[Dict] = None,
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         use_cookies: bool = True,
@@ -118,6 +119,7 @@ class Api:
     ) -> Optional[Response]:
         return self._request.get(
             url,
+            params=params,
             user_agent=user_agent,
             proxy=proxy,
             use_cookies=use_cookies,
@@ -132,6 +134,7 @@ class Api:
     def _get_cls(
         cls,
         url: str,
+        params: Optional[Dict] = None,
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         max_request_try_count: Optional[int] = None,
@@ -143,6 +146,7 @@ class Api:
     ) -> Optional[Response]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._get(
             url,
+            params=params,
             user_agent=user_agent,
             proxy=proxy,
             use_cookies=False,
@@ -158,6 +162,7 @@ class Api:
         self,
         url: str,
         body: dict,
+        params: Optional[Dict] = None,
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         use_cookies: bool = True,
@@ -170,6 +175,7 @@ class Api:
     ) -> Optional[Response]:
         return self._request.post(
             url,
+            params=params,
             user_agent=user_agent,
             proxy=proxy,
             use_cookies=use_cookies,
@@ -186,6 +192,7 @@ class Api:
         cls,
         url: str,
         body: dict,
+        params: Optional[Dict] = None,
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         max_request_try_count: Optional[int] = None,
@@ -198,6 +205,7 @@ class Api:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._post(
             url,
             body,
+            params=params,
             user_agent=user_agent,
             proxy=proxy,
             use_cookies=False,
@@ -213,6 +221,7 @@ class Api:
         self,
         url: str,
         body: dict,
+        params: Optional[Dict] = None,
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         use_cookies: bool = True,
@@ -225,6 +234,7 @@ class Api:
     ) -> Optional[Response]:
         return self._request.put(
             url,
+            params=params,
             user_agent=user_agent,
             proxy=proxy,
             use_cookies=use_cookies,
@@ -241,6 +251,7 @@ class Api:
         cls,
         url: str,
         body: dict,
+        params: Optional[Dict] = None,
         user_agent: Optional[Union[str, List[str]]] = None,
         proxy: Optional[Union[str, List[str]]] = None,
         max_request_try_count: Optional[int] = None,
@@ -253,6 +264,7 @@ class Api:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._put(
             url,
             body,
+            params=params,
             user_agent=user_agent,
             proxy=proxy,
             use_cookies=False,
