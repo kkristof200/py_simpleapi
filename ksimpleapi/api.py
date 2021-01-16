@@ -288,7 +288,8 @@ class Api:
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
         allow_redirects: Optional[bool] = None,
-        debug: Optional[bool] = None
+        debug: Optional[bool] = None,
+        timeout: Optional[float] = None
     ) -> List[bool]:
         return self._request.download(
             url,
@@ -300,7 +301,8 @@ class Api:
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
             extra_cookies=extra_cookies,
-            debug=debug
+            debug=debug,
+            timeout=timeout
         )
 
     @classmethod
@@ -315,7 +317,8 @@ class Api:
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
         allow_redirects: Optional[bool] = None,
-        debug: Optional[bool] = None
+        debug: Optional[bool] = None,
+        timeout: Optional[float] = None
     ) -> List[bool]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers()).download(
             url,
@@ -328,7 +331,8 @@ class Api:
             extra_headers=extra_headers,
             extra_cookies=extra_cookies,
             allow_redirects=allow_redirects,
-            debug=debug
+            debug=debug,
+            timeout=timeout
         )
 
     def download_async(
@@ -343,7 +347,8 @@ class Api:
         extra_cookies: Optional[Dict[str, str]] = None,
         allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None,
-        max_concurent_processes: Optional[int] = None
+        max_concurent_processes: Optional[int] = None,
+        request_timeout: Optional[float] = None
     ) -> List[bool]:
         return self._request.download_async(
             urls_paths,
@@ -355,7 +360,8 @@ class Api:
             extra_headers=extra_headers,
             extra_cookies=extra_cookies,
             debug=debug,
-            max_concurent_processes=max_concurent_processes
+            max_concurent_processes=max_concurent_processes,
+            request_timeout=request_timeout
         )
 
     @classmethod
@@ -370,7 +376,8 @@ class Api:
         extra_cookies: Optional[Dict[str, str]] = None,
         allow_redirects: bool = True,
         debug: Optional[bool] = None,
-        max_concurent_processes: Optional[int] = None
+        max_concurent_processes: Optional[int] = None,
+        request_timeout: Optional[float] = None
     ) -> List[bool]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers()).download_async(
             urls_paths,
@@ -383,7 +390,8 @@ class Api:
             extra_cookies=extra_cookies,
             allow_redirects=allow_redirects,
             debug=debug,
-            max_concurent_processes=max_concurent_processes
+            max_concurent_processes=max_concurent_processes,
+            request_timeout=request_timeout
         )
 
 

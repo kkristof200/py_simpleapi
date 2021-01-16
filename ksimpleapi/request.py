@@ -174,7 +174,8 @@ class Request:
         extra_cookies: Optional[Dict[str, str]] = None,
         allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None,
-        max_concurent_processes: Optional[int] = None
+        max_concurent_processes: Optional[int] = None,
+        request_timeout: Optional[float] = None
     ) -> List[bool]:
         headers = self.__generate_headers(
             default_headers=self.default_headers,
@@ -193,7 +194,8 @@ class Request:
             sleep_time=sleep_s_between_failed_requests if sleep_s_between_failed_requests is not None else self.sleep_s_between_failed_requests,
             proxy=self.__get_proxy(proxy, use_cookies),
             allow_redirects=allow_redirects if allow_redirects is not None else self.allow_redirects,
-            max_concurent_processes=max_concurent_processes
+            max_concurent_processes=max_concurent_processes,
+            request_timeout=request_timeout
         )
 
     def download(
@@ -208,7 +210,8 @@ class Request:
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
         allow_redirects: Optional[bool] = None,
-        debug: Optional[bool] = None
+        debug: Optional[bool] = None,
+        timeout: Optional[float] = None
     ) -> bool:
         headers = self.__generate_headers(
             url=url,
@@ -228,7 +231,8 @@ class Request:
             max_request_try_count=max_request_try_count or self.max_request_try_count,
             sleep_time=sleep_s_between_failed_requests or self.sleep_s_between_failed_requests,
             proxy=self.__get_proxy(proxy, use_cookies),
-            allow_redirects=allow_redirects if allow_redirects is not None else self.allow_redirects
+            allow_redirects=allow_redirects if allow_redirects is not None else self.allow_redirects,
+            timeout=timeout
         )
 
 
