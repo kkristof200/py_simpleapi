@@ -9,14 +9,14 @@ else:
 
 setuptools.setup(
     name="ksimpleapi",
-    version="0.0.29",
+    version="0.0.30",
     author="Kristof",
     description="ksimpleapi",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/kkristof200/py_simpleapi",
     packages=setuptools.find_packages(),
-    install_requires=["tldextract", "kcu", "requests"],
+    install_requires=["requests", "kcu", "tldextract"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

@@ -276,7 +276,7 @@ class Api:
             debug=debug
         )
     
-    def download(
+    def _download(
         self,
         url: str,
         path: str,
@@ -305,8 +305,12 @@ class Api:
             timeout=timeout
         )
 
+    # kept for convenience
+    download = _download
+
+
     @classmethod
-    def download_cls(
+    def _download_cls(
         cls,
         url: str,
         path: str,
@@ -335,7 +339,11 @@ class Api:
             timeout=timeout
         )
 
-    def download_async(
+    # kept for convenience
+    download_cls = _download_cls
+
+
+    def _download_async(
         self,
         urls_paths: Optional[Dict[str, str]] = None,
         user_agent: Optional[Union[str, List[str]]] = None,
@@ -364,8 +372,12 @@ class Api:
             request_timeout=request_timeout
         )
 
+    # kept for convenience
+    download_async = _download_async
+
+
     @classmethod
-    def download_async_cls(
+    def _download_async_cls(
         cls,
         urls_paths: Optional[Dict[str, str]] = None,
         user_agent: Optional[Union[str, List[str]]] = None,
@@ -393,6 +405,9 @@ class Api:
             max_concurent_processes=max_concurent_processes,
             request_timeout=request_timeout
         )
+
+    # kept for convenience
+    download_async_cls = _download_async_cls
 
 
 # ---------------------------------------------------------------------------------------------------------------------------------------- #
