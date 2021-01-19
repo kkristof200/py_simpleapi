@@ -290,7 +290,7 @@ class Api:
         allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None,
         timeout: Optional[float] = None
-    ) -> List[bool]:
+    ) -> bool:
         return self._request.download(
             url,
             path,
@@ -323,7 +323,7 @@ class Api:
         allow_redirects: Optional[bool] = None,
         debug: Optional[bool] = None,
         timeout: Optional[float] = None
-    ) -> List[bool]:
+    ) -> bool:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers()).download(
             url,
             path,
