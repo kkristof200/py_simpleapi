@@ -130,7 +130,7 @@ class Request:
             body=body,
             debug=debug
         )
-    
+
     def post(
         self,
         url: str,
@@ -345,9 +345,9 @@ class Request:
             proxy = self.last_used_proxy
         elif not self.last_used_proxy:
             self.last_used_proxy = proxy
-        
+
         return proxy
-    
+
     def __get_user_agent(
         self,
         user_agent: Optional[Union[str, List[str]]],

@@ -82,7 +82,7 @@ class Api:
 
         return {
             'Accept': '*/*',
-            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept-Encoding': 'gzip, deflate',
             'Accept-Language': 'en-US,en;q=0.5',
             'Connection': 'keep-alive',
             'DNT': '1',
@@ -216,7 +216,7 @@ class Api:
             allow_redirects=allow_redirects,
             debug=debug
         )
-    
+
     def _put(
         self,
         url: str,
@@ -275,7 +275,7 @@ class Api:
             allow_redirects=allow_redirects,
             debug=debug
         )
-    
+
     def _download(
         self,
         url: str,
