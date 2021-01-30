@@ -31,6 +31,7 @@ class Api:
         default_headers: Optional[Dict[str, any]] = None,
         extra_headers: Optional[Dict[str, any]] = None,
         allow_redirects: bool = True,
+        use_cloudscrape: bool = False,
         debug: bool = False
     ):
         """init function
@@ -44,6 +45,7 @@ class Api:
             max_request_try_count (int, optional): How many times does a request can be tried (if fails). Defaults to 1.
             sleep_s_between_failed_requests (Optional[float], optional): How much to wait between requests when retrying. Defaults to 0.5.
             allow_redirects (bool, optional): Wether requests allow redirects or no. Defaults to True.
+            use_cloudscrape (bool, optional): Wether to use CloudScrape library instead of requests. Defaults to False.
             debug (bool, optional): Show debug logs. Defaults to False.
         """
         self._request = Request(
@@ -57,6 +59,7 @@ class Api:
             default_headers=default_headers or self.default_headers(),
             extra_headers=extra_headers or self.extra_headers(),
             allow_redirects=allow_redirects,
+            use_cloudscrape=use_cloudscrape,
             debug=debug
         )
 

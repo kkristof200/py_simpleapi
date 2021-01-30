@@ -7,7 +7,7 @@ import random, copy, os, pickle
 
 # Pip
 from kcu.request import request, req_download, req_multi_download, RequestMethod
-import tldextract
+import tldextract, cloudscraper
 
 # ---------------------------------------------------------------------------------------------------------------------------------------- #
 
@@ -31,6 +31,7 @@ class Request:
         default_cookies: Optional[Dict[str, Dict[str, str]]] = None,
         cookies_file_path: Optional[str] = None,
         allow_redirects: bool = True,
+        use_cloudscrape: bool = False,
         debug: bool = False
     ):
         self._cookies_path = cookies_file_path
@@ -59,6 +60,7 @@ class Request:
 
         self.proxy = proxy
         self.last_used_proxy = None
+        self.use_cloudscrape = use_cloudscrape
 
         self.default_headers = {}
 
@@ -236,7 +238,21 @@ class Request:
         )
 
 
-    # ------------------------------------------------------- Private methods -------------------------------------------------------- #
+    # ------------------------------------------------------ Private properties ------------------------------------------------------ #
+
+    @property
+    def __cloudscraper(self):
+        if not hasattr(self, '__lazy_cloudscraper'):
+            self.__lazy_cloudscraper = cloudscraper.create_scraper(
+                browser={
+                    'custom': self.user_agent,
+                } if self.user_agent else None
+            )
+
+        return self.__lazy_cloudscraper
+
+
+    # -------------------------------------------------------- Private methods ------------------------------------------------------- #
 
     def _clean_url(self, url: str) -> str:
         url_comps = tldextract.extract(url)
@@ -286,8 +302,95 @@ class Request:
 
         return pickle.load(open(self._cookies_path, 'rb'))
 
-
     def __request(
+        self,
+        url: str,
+        method: RequestMethod,
+        params: Optional[Dict] = None,
+        user_agent: Optional[Union[str, List[str]]] = None,
+        proxy: Optional[Union[str, List[str]]] = None,
+        use_cookies: bool = True,
+        max_request_try_count: Optional[int] = None,
+        sleep_s_between_failed_requests: Optional[float] = None,
+        extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: Optional[bool] = None,
+        body: Optional[dict] = None,
+        debug: Optional[bool] = None
+    ) -> Optional[Response]:
+        return self.__request_cloudscrape(
+            url=url,
+            method=method,
+            params=params,
+            extra_headers=extra_headers,
+            extra_cookies=extra_cookies,
+            allow_redirects=allow_redirects,
+            body=body,
+            debug=debug
+        ) if self.use_cloudscrape else self.__request_requests(
+            url=url,
+            method=method,
+            params=params,
+            user_agent=user_agent,
+            proxy=proxy,
+            use_cookies=use_cookies,
+            max_request_try_count=max_request_try_count,
+            sleep_s_between_failed_requests=sleep_s_between_failed_requests,
+            extra_headers=extra_headers,
+            extra_cookies=extra_cookies,
+            allow_redirects=allow_redirects,
+            body=body,
+            debug=debug
+        )
+
+    def __request_cloudscrape(
+        self,
+        url: str,
+        method: RequestMethod,
+        params: Optional[Dict] = None,
+        extra_headers: Optional[Dict[str, any]] = None,
+        extra_cookies: Optional[Dict[str, str]] = None,
+        allow_redirects: Optional[bool] = None,
+        body: Optional[dict] = None,
+        debug: Optional[bool] = None
+    ) -> Optional[Response]:
+        headers = self.__generate_headers(
+            url=url,
+            default_headers=self.default_headers,
+            extra_headers=extra_headers,
+            all_cookies=self.cookies,
+            extra_cookies=extra_cookies,
+            use_cookies=False
+        )
+
+        kwargs = {
+            'params': params,
+            'headers': headers,
+            'allow_redirects': allow_redirects
+        }
+
+        if self.proxy:
+            p = self.proxy.lstrip('http://').lstrip('https://').lstrip('ftp://')
+
+            kwargs['proxies'] = {
+                'http':  'http://{}'.format(p),
+                'https': 'https://{}'.format(p),
+                'ftp':   'ftp://{}'.format(p)
+            }
+
+        if method == RequestMethod.POST:
+            if type(body) == dict or type(body) == list:
+                kwargs['json'] = body
+            else:
+                kwargs['data'] = body
+
+        return self.__cloudscraper.request(
+            method=method.value,
+            url=url,
+            **kwargs
+        )
+
+    def __request_requests(
         self,
         url: str,
         method: RequestMethod,
