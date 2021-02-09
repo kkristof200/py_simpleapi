@@ -6,7 +6,7 @@ from requests import Response
 import random, copy, os, pickle
 
 # Pip
-from kcu.request import request, req_download, req_multi_download, RequestMethod
+from kcu.request import request, req_download, req_multi_download, proxy_to_dict, RequestMethod
 import tldextract, cloudscraper
 
 # ---------------------------------------------------------------------------------------------------------------------------------------- #
@@ -370,13 +370,7 @@ class Request:
         }
 
         if self.proxy:
-            p = self.proxy.lstrip('http://').lstrip('https://').lstrip('ftp://')
-
-            kwargs['proxies'] = {
-                'http':  'http://{}'.format(p),
-                'https': 'https://{}'.format(p),
-                'ftp':   'ftp://{}'.format(p)
-            }
+            kwargs['proxies'] = proxy_to_dict(self.proxy)
 
         if method == RequestMethod.POST:
             if type(body) == dict or type(body) == list:
