@@ -4,6 +4,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional, List, Union, Dict
 from requests import Response
+import random
 
 # Local
 from .request import Request
@@ -66,13 +67,47 @@ class Api:
 
     # ------------------------------------------------------ Public properties ------------------------------------------------------- #
 
+    # user_agent
     @property
-    def debug(self):
+    def debug(self) -> bool:
         return self._request.debug
 
     @debug.setter
-    def debug(self, val):
+    def debug(
+        self,
+        val: bool
+    ) -> None:
         self._request.debug = val
+
+    # user_agent
+    @property
+    def user_agent(self) -> Optional[str]:
+        return self._request.user_agent
+
+    @user_agent.setter
+    def user_agent(
+        self,
+        val: Optional[Union[str, List[str]]] = None
+    ) -> None:
+        if type(val) == list:
+            val = random.choice(val) if len(val) > 0 else None
+
+        self._request.user_agent = val
+
+    # proxy
+    @property
+    def proxy(self) -> Optional[str]:
+        return self._request.proxy
+
+    @proxy.setter
+    def proxy(
+        self,
+        val: Optional[Union[str, List[str]]] = None
+    ) -> None:
+        if type(val) == list:
+            val = random.choice(val) if len(val) > 0 else None
+
+        self._request.proxy = val
 
 
     # -------------------------------------------------------- Public methods -------------------------------------------------------- #
