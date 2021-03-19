@@ -3,10 +3,11 @@
 # System
 from typing import Optional, List, Union, Dict
 from requests import Response
-import random, copy, os, pickle
+import random, copy, os
 
 # Pip
 from kcu.request import request, req_download, req_multi_download, proxy_to_dict, RequestMethod
+from kcu import kjson
 import tldextract, cloudscraper
 
 # ---------------------------------------------------------------------------------------------------------------------------------------- #
@@ -291,16 +292,16 @@ class Request:
         if not self.cookies:
             return
 
-        pickle.dump(
-            self.cookies,
-            open(self._cookies_path, 'wb')
+        kjson.save(
+            self._cookies_path,
+            self.cookies
         )
 
     def _load_cookies(self) -> Optional[Dict[str, Dict[str, str]]]:
         if not self._cookies_path or not os.path.exists(self._cookies_path):
             return None
 
-        return pickle.load(open(self._cookies_path, 'rb'))
+        return kjson.load(self._cookies_path)
 
     def __request(
         self,

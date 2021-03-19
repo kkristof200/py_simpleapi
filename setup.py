@@ -9,7 +9,7 @@ else:
 
 setuptools.setup(
     name="ksimpleapi",
-    version="0.0.39",
+    version="0.0.40",
     author="Kristof",
     description="ksimpleapi",
     long_description=long_description,
@@ -18,7 +18,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         'cloudscraper>=1.2.56',
-        'kcu>=0.0.61',
+        'kcu>=0.0.66',
         'requests>=2.25.1',
         'tldextract>=3.1.0'
     ],
