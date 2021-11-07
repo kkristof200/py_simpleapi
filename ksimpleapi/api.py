@@ -33,7 +33,8 @@ class Api:
         extra_headers: Optional[Dict[str, any]] = None,
         allow_redirects: bool = True,
         use_cloudscrape: bool = False,
-        debug: bool = False
+        debug: bool = False,
+        default_request_timeout: Optional[float] = None
     ):
         """init function
 
@@ -61,7 +62,8 @@ class Api:
             extra_headers=extra_headers or self.extra_headers(),
             allow_redirects=allow_redirects,
             use_cloudscrape=use_cloudscrape,
-            debug=debug
+            debug=debug,
+            default_request_timeout=default_request_timeout
         )
 
 
@@ -153,7 +155,8 @@ class Api:
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
         allow_redirects: Optional[bool] = None,
-        debug: Optional[bool] = None
+        debug: Optional[bool] = None,
+        timeout_: Optional[float] = None
     ) -> Optional[Response]:
         return self._request.get(
             url,
@@ -165,7 +168,8 @@ class Api:
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
             extra_cookies=extra_cookies,
-            debug=debug
+            debug=debug,
+            timeout_=timeout_
         )
 
     @classmethod
@@ -180,7 +184,8 @@ class Api:
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
         allow_redirects: Optional[bool] = None,
-        debug: Optional[bool] = None
+        debug: Optional[bool] = None,
+        timeout_: Optional[float] = None
     ) -> Optional[Response]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._get(
             url,
@@ -193,7 +198,8 @@ class Api:
             extra_headers=extra_headers,
             extra_cookies=extra_cookies,
             allow_redirects=allow_redirects,
-            debug=debug
+            debug=debug,
+            timeout_=timeout_
         )
 
     def _post(
@@ -209,7 +215,8 @@ class Api:
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
         allow_redirects: Optional[bool] = None,
-        debug: Optional[bool] = None
+        debug: Optional[bool] = None,
+        timeout_: Optional[float] = None
     ) -> Optional[Response]:
         return self._request.post(
             url,
@@ -222,7 +229,8 @@ class Api:
             extra_headers=extra_headers,
             extra_cookies=extra_cookies,
             body=body,
-            debug=debug
+            debug=debug,
+            timeout_=timeout_
         )
 
     @classmethod
@@ -238,7 +246,8 @@ class Api:
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
         allow_redirects: Optional[bool] = None,
-        debug: Optional[bool] = None
+        debug: Optional[bool] = None,
+        timeout_: Optional[float] = None
     ) -> Optional[Response]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._post(
             url,
@@ -252,7 +261,8 @@ class Api:
             extra_headers=extra_headers,
             extra_cookies=extra_cookies,
             allow_redirects=allow_redirects,
-            debug=debug
+            debug=debug,
+            timeout_=timeout_
         )
 
     def _put(
@@ -268,7 +278,8 @@ class Api:
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
         allow_redirects: Optional[bool] = None,
-        debug: Optional[bool] = None
+        debug: Optional[bool] = None,
+        timeout_: Optional[float] = None
     ) -> Optional[Response]:
         return self._request.put(
             url,
@@ -281,7 +292,8 @@ class Api:
             extra_headers=extra_headers,
             extra_cookies=extra_cookies,
             body=body,
-            debug=debug
+            debug=debug,
+            timeout_=timeout_
         )
 
     @classmethod
@@ -297,7 +309,8 @@ class Api:
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
         allow_redirects: Optional[bool] = None,
-        debug: Optional[bool] = None
+        debug: Optional[bool] = None,
+        timeout_: Optional[float] = None
     ) -> Optional[Response]:
         return Api(default_headers=cls.default_headers(), extra_headers=cls.extra_headers())._put(
             url,
@@ -311,7 +324,8 @@ class Api:
             extra_headers=extra_headers,
             extra_cookies=extra_cookies,
             allow_redirects=allow_redirects,
-            debug=debug
+            debug=debug,
+            timeout_=timeout_
         )
 
     def _download(

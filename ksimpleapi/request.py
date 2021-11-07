@@ -33,10 +33,12 @@ class Request:
         cookies_file_path: Optional[str] = None,
         allow_redirects: bool = True,
         use_cloudscrape: bool = False,
-        debug: bool = False
+        debug: bool = False,
+        default_request_timeout: Optional[float] = None
     ):
         self._cookies_path = cookies_file_path
         self.cookies = self._load_cookies()
+        self.default_request_timeout = default_request_timeout
 
         if default_cookies:
             self.cookies = self.cookies or {}
@@ -86,7 +88,8 @@ class Request:
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
         allow_redirects: Optional[bool] = None,
-        debug: Optional[bool] = None
+        debug: Optional[bool] = None,
+        timeout_: Optional[float] = None
     ) -> Optional[Response]:
         return self.__request(
             url,
@@ -100,7 +103,8 @@ class Request:
             sleep_s_between_failed_requests=sleep_s_between_failed_requests,
             extra_headers=extra_headers,
             allow_redirects=allow_redirects,
-            debug=debug
+            debug=debug,
+            timeout_=timeout_
         )
 
     def put(
@@ -116,7 +120,8 @@ class Request:
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
         allow_redirects: Optional[bool] = None,
-        debug: Optional[bool] = None
+        debug: Optional[bool] = None,
+        timeout_: Optional[float] = None
     ) -> Optional[Response]:
         return self.__request(
             url,
@@ -131,7 +136,8 @@ class Request:
             extra_headers=extra_headers,
             allow_redirects=allow_redirects,
             body=body,
-            debug=debug
+            debug=debug,
+            timeout_=timeout_
         )
 
     def post(
@@ -147,7 +153,8 @@ class Request:
         extra_headers: Optional[Dict[str, any]] = None,
         extra_cookies: Optional[Dict[str, str]] = None,
         allow_redirects: Optional[bool] = None,
-        debug: Optional[bool] = None
+        debug: Optional[bool] = None,
+        timeout_: Optional[float] = None
     ) -> Optional[Response]:
         return self.__request(
             url,
@@ -162,7 +169,8 @@ class Request:
             extra_headers=extra_headers,
             allow_redirects=allow_redirects,
             body=body,
-            debug=debug
+            debug=debug,
+            timeout_=timeout_
         )
 
     def download_async(
@@ -317,7 +325,8 @@ class Request:
         extra_cookies: Optional[Dict[str, str]] = None,
         allow_redirects: Optional[bool] = None,
         body: Optional[dict] = None,
-        debug: Optional[bool] = None
+        debug: Optional[bool] = None,
+        timeout_: Optional[float] = None
     ) -> Optional[Response]:
         return self.__request_cloudscrape(
             url=url,
@@ -341,7 +350,8 @@ class Request:
             extra_cookies=extra_cookies,
             allow_redirects=allow_redirects,
             body=body,
-            debug=debug
+            debug=debug,
+            timeout_=timeout_
         )
 
     def __request_cloudscrape(
@@ -399,7 +409,8 @@ class Request:
         extra_cookies: Optional[Dict[str, str]] = None,
         allow_redirects: Optional[bool] = None,
         body: Optional[dict] = None,
-        debug: Optional[bool] = None
+        debug: Optional[bool] = None,
+        timeout_: Optional[float] = None
     ) -> Optional[Response]:
         headers = self.__generate_headers(
             url=url,
@@ -421,7 +432,8 @@ class Request:
             max_request_try_count=max_request_try_count if max_request_try_count is not None else self.max_request_try_count,
             sleep_time=sleep_s_between_failed_requests if sleep_s_between_failed_requests is not None else self.sleep_s_between_failed_requests,
             proxy=self.__get_proxy(proxy, use_cookies),
-            allow_redirects=allow_redirects if allow_redirects is not None else self.allow_redirects
+            allow_redirects=allow_redirects if allow_redirects is not None else self.allow_redirects,
+            timeout_=timeout_ or self.default_request_timeout
         )
 
         if use_cookies and self.keep_cookies and res and res.cookies:
